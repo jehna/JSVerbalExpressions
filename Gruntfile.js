@@ -9,21 +9,6 @@ module.exports = function gruntConfig(grunt) {
             target: ['VerbalExpressions.js', 'test/tests.js', 'Gruntfile.js'],
         },
 
-        ava: {
-            test: ['test/tests.js'],
-            options: {
-                nyc: true,
-            },
-
-            verbose: {
-                test: ['test/tests.js'],
-                options: {
-                    verbose: true,
-                    nyc: true,
-                },
-            },
-        },
-
         babel: {
             options: {
                 sourceMap: true,
@@ -90,7 +75,6 @@ module.exports = function gruntConfig(grunt) {
     });
 
     grunt.loadNpmTasks('grunt-eslint');
-    grunt.loadNpmTasks('grunt-ava');
     grunt.loadNpmTasks('grunt-babel');
     grunt.loadNpmTasks('grunt-umd');
     grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -98,18 +82,8 @@ module.exports = function gruntConfig(grunt) {
     grunt.loadNpmTasks('grunt-markdownlint');
 
     grunt.registerTask('default', ['test']);
-    grunt.registerTask('test', [
-        'compile',
-        'eslint',
-        'markdownlint',
-        'ava:test',
-    ]);
-    grunt.registerTask('test:verbose', ['compile', 'eslint', 'ava:verbose']);
+    grunt.registerTask('test', ['compile', 'eslint', 'markdownlint']);
+    grunt.registerTask('test:verbose', ['compile', 'eslint']);
     grunt.registerTask('compile', ['babel', 'umd:all']);
-    grunt.registerTask('build', [
-        'compile',
-        'ava:test',
-        'uglify',
-        'sourcemap_localize',
-    ]);
+    grunt.registerTask('build', ['compile', 'uglify', 'sourcemap_localize']);
 };
