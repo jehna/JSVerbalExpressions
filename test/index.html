@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Mocha Tests</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+  <script src="../node_modules/chai/chai.js"></script>
+  <script src="../node_modules/mocha/mocha.js"></script>
+</head>
+
+<body>
+  <div id="mocha"></div>
+  <script src="../dist/verbalexpressions.min.js"></script>
+
+  <script class="mocha-init">
+    mocha.setup('bdd');
+    mocha.checkLeaks();
+  </script>
+  <script src="./browser.test.js"></script>
+  <script class="mocha-exec">
+    var testsResult
+    after(function () {
+      // Very ES5 code because IE support
+
+      function getTests(suite) {
+        return suite.tests
+          .map(function (test) {
+            return {
+              err: test.err,
+              title: test.title,
+              status: test.status,
+            };
+          })
+          .concat(
+            suite.suites.reduce(function (all, suite) {
+              return all.concat(getTests(suite));
+            }, [])
+          );
+      }
+
+      // Save all test results into a global variable so it's easy to read from Selenium
+      testsResult = getTests(mocha.suite);
+    })
+    mocha.run();
+  </script>
+</body>
+
+</html>
